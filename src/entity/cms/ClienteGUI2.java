@@ -53,6 +53,11 @@ public class ClienteGUI2 extends JFrame {
         textPanel.add(buscarField, BorderLayout.CENTER);
         textPanel.add(btnText, BorderLayout.EAST);
 
+        JTextField excluirField = new JTextField();
+        JButton btnInserir = new JButton("Inserir Cliente");
+        JPanel inserirPanel = new JPanel(new BorderLayout());
+        inserirPanel.add(btnInserir, BorderLayout.CENTER);
+
 
         // Adiciona um listener ao JScrollPane para carregar mais clientes ao rolar
         scrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
@@ -73,9 +78,11 @@ public class ClienteGUI2 extends JFrame {
 
         btnCarregar.addActionListener(e -> carregarArquivo());
         btnText.addActionListener(e -> buscarCliente(buscarField));
+        btnInserir.addActionListener(e -> inserirCliente());
 
         panel.add(btnCarregar, BorderLayout.NORTH);
-        panel.add(textPanel, BorderLayout.SOUTH);
+        panel.add(inserirPanel, BorderLayout.SOUTH);
+        //panel.add(textPanel, BorderLayout.SOUTH);
         panel.add(scrollPane, BorderLayout.CENTER);
         add(panel);
     }
@@ -131,8 +138,14 @@ public class ClienteGUI2 extends JFrame {
         }
     }
 
+    public void inserirCliente(){
+        if (arquivoSelecionado == null) {
+            JOptionPane.showMessageDialog(this, "Nenhum arquivo selecionado");
+            return;
+        }
 
-
+        novoCliente nc = new novoCliente(arquivoSelecionado);
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
