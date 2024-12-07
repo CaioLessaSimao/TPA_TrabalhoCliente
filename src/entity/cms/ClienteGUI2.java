@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.io.IOException;
 
 public class ClienteGUI2 extends JFrame {
     private JTable table;
@@ -27,7 +28,7 @@ public class ClienteGUI2 extends JFrame {
     }
 
 
-    private void carregarArquivo(String modo) {
+    private void carregarArquivo(String modo) throws IOException {
         JFileChooser fileChooser = new JFileChooser();
         int retorno = fileChooser.showOpenDialog(this);
         if (retorno == JFileChooser.APPROVE_OPTION) {
@@ -78,9 +79,21 @@ public class ClienteGUI2 extends JFrame {
             }
         });
 
-        btnCarregar.addActionListener(e -> carregarArquivo("leitura"));
+        btnCarregar.addActionListener(e -> {
+            try {
+                carregarArquivo("leitura");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         btnFiltrar.addActionListener(e -> buscarCliente(buscarField));
-        btnRemover.addActionListener(e -> removerCliente(buscarField));
+        btnRemover.addActionListener(e -> {
+            try {
+                removerCliente(buscarField);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         btnInserir.addActionListener(e -> inserirCliente());
 
         JPanel northPanel = new JPanel(new FlowLayout());
@@ -95,7 +108,7 @@ public class ClienteGUI2 extends JFrame {
         add(panel);
     }
 
-    private void removerCliente(JTextField buscarField) {
+    private void removerCliente(JTextField buscarField) throws IOException {
         if (arquivoSelecionado == null) {
             JOptionPane.showMessageDialog(this, "Nenhum arquivo carregado.");
             return;
