@@ -1,6 +1,8 @@
 package entity.cms;
 
-import java.io.Serializable;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Cliente implements Serializable, Comparable<Cliente> {
     // Serial Version UID para controle de versão da serialização
@@ -65,6 +67,7 @@ public class Cliente implements Serializable, Comparable<Cliente> {
         }
         this.creditScore = creditScore;
     }
+
 
     // Método para exibir as informações do cliente
     @Override

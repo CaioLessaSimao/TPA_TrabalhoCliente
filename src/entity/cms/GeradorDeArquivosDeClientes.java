@@ -114,20 +114,23 @@ public class GeradorDeArquivosDeClientes {
 
     // Método principal para executar o gerador de um grande dataset
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        // Solicitando o nome do arquivo ao usuário
-        System.out.print("Digite o nome do arquivo de saída: ");
-        String nomeArquivo = scanner.next();
-
-        // Solicitando a quantidade de clientes ao usuário
-        System.out.print("Digite a quantidade de clientes a serem gerados: ");
-        int quantidadeClientes = scanner.nextInt();
+//        Scanner scanner = new Scanner(System.in);
+//
+//        // Solicitando o nome do arquivo ao usuário
+//        System.out.print("Digite o nome do arquivo de saída: ");
+//        String nomeArquivo = scanner.next();
+//
+//        // Solicitando a quantidade de clientes ao usuário
+//        System.out.print("Digite a quantidade de clientes a serem gerados: ");
+//        int quantidadeClientes = scanner.nextInt();
 
         // Instanciando o gerador
         GeradorDeArquivosDeClientes gerador = new GeradorDeArquivosDeClientes();
 
         // Gerar um grande dataset de clientes
+
+        String nomeArquivo = "Clientes.dat";
+        int quantidadeClientes = 10000;
         gerador.geraGrandeDataSetDeClientes(nomeArquivo, quantidadeClientes);
     }
 }

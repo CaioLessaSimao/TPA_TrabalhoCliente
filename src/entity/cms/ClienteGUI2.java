@@ -8,12 +8,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.io.IOException;
+import java.util.List;
 
 public class ClienteGUI2 extends JFrame {
     private JTable table;
     private DefaultTableModel tableModel;
     private BufferDeClientes bufferDeClientes;
-    private final int TAMANHO_BUFFER = 10000;
+    private final int TAMANHO_BUFFER = 1000;
     private int registrosCarregados = 0; // Contador de registros já carregados
     private String arquivoSelecionado;
     private boolean arquivoCarregado = false; // Para verificar se o arquivo foi carregado
@@ -114,25 +115,13 @@ public class ClienteGUI2 extends JFrame {
             return;
         }
 
-        String nomeParaRemover = buscarField.getText().trim().toLowerCase();
+        String nomeParaRemover = buscarField.getText().trim();
         if (nomeParaRemover.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Digite o nome do cliente para remover.");
             return;
         }
 
-        carregarArquivo("escrita");
-        bufferDeClientes.inicializaBuffer("escrita", arquivoSelecionado);
-
-        try {
-            bufferDeClientes.removeCliente(nomeParaRemover); //chamar função
-            JOptionPane.showMessageDialog(this, "Cliente removido com sucesso.");
-            tableModel.setRowCount(0); // Limpa a tabela
-            carregarMaisClientes(); // Atualiza os dados na tabela
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao remover cliente: " + e.getMessage());
-        } finally {
-            bufferDeClientes.fechaBuffer();
-        }
+        RemoverCliente.execute(arquivoSelecionado, "arqClientesAtualizado.dat", nomeParaRemover, TAMANHO_BUFFER);
     }
 
     private void carregarMaisClientes() {
