@@ -27,36 +27,38 @@ public class ClienteGUI2 extends JFrame {
     }
 
 
-    private void carregarArquivo() {
+    private void carregarArquivo(String modo) {
         JFileChooser fileChooser = new JFileChooser();
         int retorno = fileChooser.showOpenDialog(this);
         if (retorno == JFileChooser.APPROVE_OPTION) {
             arquivoSelecionado = fileChooser.getSelectedFile().getAbsolutePath();
             bufferDeClientes.associaBuffer(new ArquivoCliente()); // Substitua por sua implementação
-            bufferDeClientes.inicializaBuffer("leitura", arquivoSelecionado); // Passa o nome do arquivo aqui
+            bufferDeClientes.inicializaBuffer(modo,  arquivoSelecionado); // Passa o nome do arquivo aqui
             registrosCarregados = 0; // Reseta o contador
             tableModel.setRowCount(0); // Limpa a tabela
             carregarMaisClientes(); // Carrega os primeiros clientes
             arquivoCarregado = true; // Marca que o arquivo foi carregado
         }
     }
+
     private void criarInterface() {
         JPanel panel = new JPanel(new BorderLayout());
-        JButton btnCarregar = new JButton("Carregar Clientes");
+        JButton btnCarregar = new JButton("Listar Clientes");
+        JButton btnRemover = new JButton("Remover Cliente");
         tableModel = new DefaultTableModel(new String[]{"#", "Nome", "Sobrenome", "Telefone", "Endereço", "Credit Score"}, 0);
         table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
 
         JTextField buscarField = new JTextField();
-        JButton btnText = new JButton("Filtrar Clientes");
+        JButton btnFiltrar = new JButton("Pesquisar");
         JPanel textPanel = new JPanel(new BorderLayout());
         textPanel.add(buscarField, BorderLayout.CENTER);
-        textPanel.add(btnText, BorderLayout.EAST);
+        textPanel.add(btnFiltrar, BorderLayout.EAST);
 
         JTextField excluirField = new JTextField();
         JButton btnInserir = new JButton("Inserir Cliente");
         JPanel inserirPanel = new JPanel(new BorderLayout());
-        inserirPanel.add(btnInserir, BorderLayout.CENTER);
+
 
 
         // Adiciona um listener ao JScrollPane para carregar mais clientes ao rolar
@@ -64,7 +66,6 @@ public class ClienteGUI2 extends JFrame {
             @Override
             public void adjustmentValueChanged(AdjustmentEvent e) {
                 if (!scrollPane.getVerticalScrollBar().getValueIsAdjusting()) {
-                    // Verifica se estamos no final da tabela e se o arquivo foi carregado
                     if (arquivoCarregado &&
                             tableModel.getRowCount() >= TAMANHO_BUFFER &&
                             scrollPane.getVerticalScrollBar().getValue() +
@@ -76,16 +77,50 @@ public class ClienteGUI2 extends JFrame {
             }
         });
 
-        btnCarregar.addActionListener(e -> carregarArquivo());
-        btnText.addActionListener(e -> buscarCliente(buscarField));
+        btnCarregar.addActionListener(e -> carregarArquivo("leitura"));
+        btnFiltrar.addActionListener(e -> buscarCliente(buscarField));
+        btnRemover.addActionListener(e -> removerCliente(buscarField));
         btnInserir.addActionListener(e -> inserirCliente());
 
-        panel.add(btnCarregar, BorderLayout.NORTH);
+        JPanel northPanel = new JPanel(new FlowLayout());
+        northPanel.add(btnCarregar);
+        northPanel.add(btnRemover);
+        northPanel.add(btnInserir);
+
+        panel.add(northPanel, BorderLayout.NORTH);
         panel.add(inserirPanel, BorderLayout.SOUTH);
-        //panel.add(textPanel, BorderLayout.SOUTH);
+        panel.add(textPanel, BorderLayout.SOUTH);
         panel.add(scrollPane, BorderLayout.CENTER);
         add(panel);
     }
+
+    private void removerCliente(JTextField buscarField) {
+        if (arquivoSelecionado == null) {
+            JOptionPane.showMessageDialog(this, "Nenhum arquivo carregado.");
+            return;
+        }
+
+        String nomeParaRemover = buscarField.getText().trim().toLowerCase();
+        if (nomeParaRemover.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Digite o nome do cliente para remover.");
+            return;
+        }
+
+        carregarArquivo("escrita");
+        bufferDeClientes.inicializaBuffer("escrita", arquivoSelecionado);
+
+        try {
+            bufferDeClientes.removeCliente(nomeParaRemover); //chamar função
+            JOptionPane.showMessageDialog(this, "Cliente removido com sucesso.");
+            tableModel.setRowCount(0); // Limpa a tabela
+            carregarMaisClientes(); // Atualiza os dados na tabela
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao remover cliente: " + e.getMessage());
+        } finally {
+            bufferDeClientes.fechaBuffer();
+        }
+    }
+
     private void carregarMaisClientes() {
         // Carrega apenas 10.000 registros de cada vez
         Cliente[] clientes = bufferDeClientes.proximosClientes(TAMANHO_BUFFER); // Chama o método com o tamanho do buffer

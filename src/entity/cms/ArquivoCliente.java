@@ -55,6 +55,26 @@ public class ArquivoCliente implements ArquivoSequencial<Cliente> {
         }
     }
 
+    public void apagarCliente(String nome) throws IOException, ClassNotFoundException {
+        if (file == null || !file.exists()) {
+            throw new FileNotFoundException("Arquivo não encontrado.");
+        }
+
+        // Lê todos os clientes do arquivo
+        List<Cliente> clientes = leiaDoArquivo(Integer.MAX_VALUE);
+
+        // Filtra a lista removendo o cliente com o nome específico
+        clientes.removeIf(cliente -> cliente.getNome().equals(nome));
+
+        // Reescreve o arquivo com os clientes restantes
+        try (ObjectOutputStream novoOutputStream = new ObjectOutputStream(new FileOutputStream(file))) {
+            for (Cliente cliente : clientes) {
+                novoOutputStream.writeObject(cliente);
+            }
+        }
+    }
+
+
     @Override
     public void fechaArquivo() throws IOException {
         if (inputStream != null) {

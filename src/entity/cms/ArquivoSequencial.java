@@ -16,4 +16,6 @@ public interface ArquivoSequencial<T> {
 
     // Fecha o arquivo de forma segura, liberando os recursos.
     void fechaArquivo() throws IOException;
+
+    void apagarCliente(String nome) throws IOException, ClassNotFoundException;
 }

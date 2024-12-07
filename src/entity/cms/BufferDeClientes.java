@@ -29,8 +29,10 @@ public class BufferDeClientes implements Buffer<Cliente> {
         this.modo = modo;
         try {
             if (modo.equals("leitura")) {
+                System.out.println("inicializou como leitura");
                 arquivoSequencial.abrirArquivo(nomeArquivo, "leitura", Cliente.class);
             } else if (modo.equals("escrita")) {
+                System.out.println("Inicializou como escrita");
                 arquivoSequencial.abrirArquivo(nomeArquivo, "escrita", Cliente.class);
             } else {
                 throw new IllegalArgumentException("Modo inválido: deve ser 'leitura' ou 'escrita'");
@@ -43,9 +45,9 @@ public class BufferDeClientes implements Buffer<Cliente> {
  // Carrega dados do arquivo para o buffer (modo leitura)
     @Override
     public void carregaBuffer() {
-        if (!modo.equals("leitura")) {
-            throw new IllegalStateException("Buffer não está em modo de leitura!");
-        }
+//        if (!modo.equals("leitura")) {
+//            throw new IllegalStateException("Buffer não está em modo de leitura!");
+//        }
 
         try {
             // Lê uma lista de clientes do arquivo e os coloca na fila (buffer)
@@ -102,11 +104,24 @@ public class BufferDeClientes implements Buffer<Cliente> {
         }
     }
 
+    public void removeCliente(String nome) {
+        if (!modo.equals("escrita")) {
+            throw new IllegalStateException("Buffer não está em modo de escrita!");
+        }
+
+        try {
+            arquivoSequencial.apagarCliente(nome);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     // Lê o próximo cliente do buffer (modo leitura)
     public Cliente proximoCliente() {
-        if (!modo.equals("leitura")) {
-            throw new IllegalStateException("Buffer não está em modo de leitura!");
-        }
+//        if (!modo.equals("leitura")) {
+//            throw new IllegalStateException("Buffer não está em modo de leitura!");
+//        }
 
         if (buffer.isEmpty()) {
             carregaBuffer(); // Recarrega o buffer se estiver vazio
