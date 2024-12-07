@@ -1,6 +1,8 @@
 package entity.cms;
 
 import com.github.javafaker.Faker;
+
+import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +12,13 @@ public class GeradorDeArquivosDeClientes {
 
     private final ArquivoCliente arquivoCliente;
     private final Faker faker;
+    private List<String> nomesGerados;
 
     // Construtor que inicializa o gerador de arquivos de clientes
     public GeradorDeArquivosDeClientes() {
         this.arquivoCliente = new ArquivoCliente();
         this.faker = new Faker();
+        this.nomesGerados = new ArrayList<>();
     }
 
     // Método que gera um arquivo binário com um número especificado de registros de clientes
@@ -46,7 +50,13 @@ public class GeradorDeArquivosDeClientes {
 
     // Método para gerar um cliente fictício
     private Cliente gerarClienteFicticio() {
-        String nome = faker.name().firstName();
+        String nome;
+        do{
+            String aux = faker.name().firstName();
+            nome = aux;
+        }while (nomesGerados.contains(nome));
+        nomesGerados.add(nome);
+
         String sobrenome = faker.name().lastName();
         String endereco = faker.address().fullAddress();
         String telefone = faker.phoneNumber().cellPhone();
