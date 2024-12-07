@@ -32,6 +32,7 @@ public class ClienteGUI2 extends JFrame {
         int retorno = fileChooser.showOpenDialog(this);
         if (retorno == JFileChooser.APPROVE_OPTION) {
             arquivoSelecionado = fileChooser.getSelectedFile().getAbsolutePath();
+            OrdenarArquivo.execute(arquivoSelecionado);
             bufferDeClientes.associaBuffer(new ArquivoCliente()); // Substitua por sua implementação
             bufferDeClientes.inicializaBuffer(modo,  arquivoSelecionado); // Passa o nome do arquivo aqui
             registrosCarregados = 0; // Reseta o contador
