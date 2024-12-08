@@ -95,7 +95,13 @@ public class ClienteGUI2 extends JFrame {
                 throw new RuntimeException(ex);
             }
         });
-        btnInserir.addActionListener(e -> inserirCliente());
+        btnInserir.addActionListener(e -> {
+            try {
+                inserirCliente();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         JPanel northPanel = new JPanel(new FlowLayout());
         northPanel.add(btnCarregar);
@@ -176,13 +182,25 @@ public class ClienteGUI2 extends JFrame {
         }
     }
 
-    public void inserirCliente(){
+    public void inserirCliente() throws IOException {
         if (arquivoSelecionado == null) {
             JOptionPane.showMessageDialog(this, "Nenhum arquivo selecionado");
             return;
         }
 
-        novoCliente nc = new novoCliente(arquivoSelecionado);
+        novoCliente nc = new novoCliente(arquivoSelecionado, this);
+
+    }
+
+    public void recarregarArquivo() throws IOException {
+        System.out.println("jorge");
+        OrdenarArquivo.execute(arquivoSelecionado);
+        bufferDeClientes.associaBuffer(new ArquivoCliente()); // Substitua por sua implementação
+        bufferDeClientes.inicializaBuffer("leitura",  arquivoSelecionado); // Passa o nome do arquivo aqui
+        registrosCarregados = 0; // Reseta o contador
+        tableModel.setRowCount(0); // Limpa a tabela
+        carregarMaisClientes(); // Carrega os primeiros clientes
+        arquivoCarregado = true; // Marca que o arquivo foi carregado
     }
 
     public static void main(String[] args) {

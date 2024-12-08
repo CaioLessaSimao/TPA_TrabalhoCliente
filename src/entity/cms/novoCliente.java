@@ -10,7 +10,7 @@ public class novoCliente {
     JTextField campoNome, campoSobrenome, campoEndereco, campoTelefone, campoCreditScore;
     String arquivo;
 
-    public novoCliente (String arquivo) {
+    public novoCliente (String arquivo, ClienteGUI2 c) {
 
         this.arquivo = arquivo;
 
@@ -61,7 +61,7 @@ public class novoCliente {
         // Define a ação do botão
         botaoEnviar.addActionListener(e -> {
             try {
-                adicionarCliente();
+                adicionarCliente(janela, c);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -74,7 +74,7 @@ public class novoCliente {
         janela.setVisible(true); // Torna a janela visível
     }
 
-    public void adicionarCliente() throws IOException {
+    public void adicionarCliente(JFrame janela, ClienteGUI2 c) throws IOException {
         String nome = campoNome.getText();
         String sobrenome = campoSobrenome.getText();
         String endereco = campoEndereco.getText();
@@ -100,6 +100,8 @@ public class novoCliente {
         } catch (IOException e) {
             System.err.println("Erro ao gravar o objeto: " + e.getMessage());
         }
+        c.recarregarArquivo();
+        janela.dispose();
     }
 
     static class AppendableObjectOutputStream extends ObjectOutputStream {

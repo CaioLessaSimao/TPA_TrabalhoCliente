@@ -48,16 +48,22 @@ public class GeradorDeArquivosDeClientes {
         }
     }
 
+    private String geraUnico(){
+        String nomeCompleto;
+        do{
+            String nome = faker.name().firstName();
+            String sobrenome = faker.name().lastName();
+            nomeCompleto = nome + " " + sobrenome;
+        }while (nomesGerados.contains(nomeCompleto));
+        nomesGerados.add(nomeCompleto);
+        return nomeCompleto;
+    }
+
     // Método para gerar um cliente fictício
     private Cliente gerarClienteFicticio() {
-        String nome;
-        do{
-            String aux = faker.name().firstName();
-            nome = aux;
-        }while (nomesGerados.contains(nome));
-        nomesGerados.add(nome);
-
-        String sobrenome = faker.name().lastName();
+        String[] unico = geraUnico().split(" ");
+        String nome = unico[0];
+        String sobrenome = unico[1];
         String endereco = faker.address().fullAddress();
         String telefone = faker.phoneNumber().cellPhone();
         int creditScore = faker.number().numberBetween(0, 100);
